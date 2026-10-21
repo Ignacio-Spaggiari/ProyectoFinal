@@ -21,18 +21,23 @@ function addTone(d, sr, { freq, start, dur, amp = 0.5, wave = 'sine', vibrato = 
   }
 }
 
-// Ruido de hinchada (ruido filtrado en banda) con una envolvente dada
-function addCrowd(d, sr, start, dur, envFn, amp = 1) {
+// Ruido de hinchada con una envolvente dada. Se filtra con tres pasa-bajos en cascada
+// para sacar los agudos (que suenan a lluvia) y dejar un murmullo grave.
+// "bright" controla cuánto agudo queda: más bajo = más suave.
+function addCrowd(d, sr, start, dur, envFn, amp = 1, bright = 0.08) {
   let lp1 = 0;
   let lp2 = 0;
+  let lp3 = 0;
+  let dc = 0;
   const s0 = Math.floor(start * sr);
   const s1 = Math.min(d.length, Math.floor((start + dur) * sr));
   for (let i = s0; i < s1; i++) {
     const t = (i - s0) / sr;
-    const w = noise();
-    lp1 += 0.12 * (w - lp1);
-    lp2 += 0.015 * (w - lp2);
-    d[i] += (lp1 - lp2) * amp * envFn(t);
+    lp1 += bright * (noise() - lp1);
+    lp2 += bright * (lp1 - lp2);
+    lp3 += bright * (lp2 - lp3);
+    dc += 0.004 * (lp3 - dc);
+    d[i] += (lp3 - dc) * amp * envFn(t);
   }
 }
 
@@ -64,19 +69,23 @@ export function generateSounds(scene) {
     }
   });
 
-  // Ambiente: murmullo de hinchada en loop (6 s; las modulaciones cierran justo en el loop)
+  // Ambiente: murmullo suave de hinchada en loop (6 s; las modulaciones cierran justo en el loop).
+  // Las puntas se mezclan entre sí para que el loop no tenga cortes.
   add(
     'crowd',
     6,
     (d) => {
-      addCrowd(d, sr, 0, 6, (t) => 0.75 + 0.15 * Math.sin((TAU * t) / 3) + 0.1 * Math.sin((TAU * t) / 2 + 1));
-      const fade = Math.floor(0.01 * sr);
+      const fade = Math.floor(0.5 * sr);
+      const tmp = new Float32Array(d.length + fade);
+      addCrowd(tmp, sr, 0, tmp.length / sr, (t) => 0.85 + 0.15 * Math.sin((TAU * t) / 3), 1, 0.03);
+      for (let i = 0; i < d.length; i++) d[i] = tmp[i];
+      // El final generado de más se funde con el inicio: d[último] continúa en d[0]
       for (let i = 0; i < fade; i++) {
-        d[i] *= i / fade;
-        d[d.length - 1 - i] *= i / fade;
+        const k = i / fade;
+        d[i] = tmp[i] * k + tmp[d.length + i] * (1 - k);
       }
     },
-    0.7
+    0.5
   );
 
   // Gol: red + grito de hinchada

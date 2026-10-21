@@ -303,17 +303,23 @@ function makeCharacters(scene, g) {
 // ---------- Interfaz ----------
 
 function makeUi(g) {
-  // Mira
+  // Mira: amarillo brillante con contorno negro para que contraste con la red y la tribuna
+  const crosshair = (width, color) => {
+    g.lineStyle(width, color);
+    g.strokeCircle(18, 18, 12);
+    g.lineBetween(18, 2, 18, 11);
+    g.lineBetween(18, 25, 18, 34);
+    g.lineBetween(2, 18, 11, 18);
+    g.lineBetween(25, 18, 34, 18);
+  };
   g.clear();
-  g.lineStyle(3, 0xff2d2d);
-  g.strokeCircle(12, 12, 9);
-  g.lineBetween(12, 0, 12, 7);
-  g.lineBetween(12, 17, 12, 24);
-  g.lineBetween(0, 12, 7, 12);
-  g.lineBetween(17, 12, 24, 12);
-  g.fillStyle(0xff2d2d);
-  g.fillCircle(12, 12, 2);
-  g.generateTexture('crosshair', 24, 24);
+  crosshair(7, 0x000000);
+  crosshair(3.5, 0xffee00);
+  g.fillStyle(0x000000);
+  g.fillCircle(18, 18, 4);
+  g.fillStyle(0xffffff);
+  g.fillCircle(18, 18, 2.5);
+  g.generateTexture('crosshair', 36, 36);
 
   // Indicadores de penal
   g.clear();

@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { DIFFICULTIES, DIFFICULTY_ORDER } from '../config.js';
 import { createButton, MenuNav } from '../ui/Button.js';
 import { addMuteButton } from '../ui/MuteButton.js';
-import { textStyle, goTo, playSfx } from '../ui/theme.js';
+import { textStyle, goTo, playSfx, startMusic } from '../ui/theme.js';
 
 /** Menú principal: elegir dificultad, jugar o ver instrucciones. */
 export class MenuScene extends Phaser.Scene {
@@ -56,6 +56,7 @@ export class MenuScene extends Phaser.Scene {
     this.add.text(480, 516, '© 4real studios', textStyle(12, '#94a3b8')).setOrigin(0.5);
 
     addMuteButton(this, 930, 30);
+    startMusic(this);
     this.cameras.main.fadeIn(300, 0, 0, 0);
   }
 }

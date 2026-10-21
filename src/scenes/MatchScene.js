@@ -86,7 +86,7 @@ export class MatchScene extends Phaser.Scene {
     this.kicker = this.add.sprite(KICKER_START.x, KICKER_START.y, 'kicker_player', 'idle').setOrigin(0.5, 1).setDepth(6);
 
     this.crosshair = this.add.image(0, 0, 'crosshair').setDepth(8).setVisible(false);
-    this.tweens.add({ targets: this.crosshair, alpha: 0.35, duration: 180, yoyo: true, repeat: -1 });
+    this.tweens.add({ targets: this.crosshair, alpha: 0.65, scale: 1.15, duration: 220, yoyo: true, repeat: -1 });
     this.aimGuide = this.add.graphics().setDepth(7);
 
     this.confetti = this.add
@@ -195,7 +195,7 @@ export class MatchScene extends Phaser.Scene {
   }
 
   setupAudio() {
-    this.crowd = this.cache.audio.exists('crowd') ? this.sound.add('crowd', { loop: true, volume: 0.35 }) : null;
+    this.crowd = this.cache.audio.exists('crowd') ? this.sound.add('crowd', { loop: true, volume: 0.18 }) : null;
     if (this.crowd) this.crowd.play();
 
     const onPause = () => this.crowd && this.crowd.pause();
@@ -585,14 +585,15 @@ export class MatchScene extends Phaser.Scene {
   drawAimGuide() {
     const g = this.aimGuide;
     g.clear();
-    g.lineStyle(2, 0xff2d2d, 0.5);
-    if (this.phase === 'aimX') {
-      g.lineBetween(this.aimX, GOAL.y - 20, this.aimX, GOAL_LINE_Y);
-    } else {
-      g.lineBetween(this.aimX, GOAL.y - 20, this.aimX, GOAL_LINE_Y);
-      g.lineStyle(2, 0xffffff, 0.5);
-      g.lineBetween(GOAL.x - 20, this.aimY, GOAL.x + GOAL.width + 20, this.aimY);
-    }
+    // Línea negra debajo y amarilla encima: se ve sobre cualquier fondo
+    const line = (x1, y1, x2, y2) => {
+      g.lineStyle(4, 0x000000, 0.5);
+      g.lineBetween(x1, y1, x2, y2);
+      g.lineStyle(2, 0xffee00, 0.85);
+      g.lineBetween(x1, y1, x2, y2);
+    };
+    line(this.aimX, GOAL.y - 20, this.aimX, GOAL_LINE_Y);
+    if (this.phase !== 'aimX') line(GOAL.x - 20, this.aimY, GOAL.x + GOAL.width + 20, this.aimY);
   }
 
   drawTimerBar() {

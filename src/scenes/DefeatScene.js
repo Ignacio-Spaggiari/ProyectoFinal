@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { buildResultScreen } from './resultScreen.js';
 import { textStyle, playSfx } from '../ui/theme.js';
+import { playerTextures } from '../skins.js';
 
 /** Derrota: jugador abatido y marcador final. */
 export class DefeatScene extends Phaser.Scene {
@@ -22,7 +23,7 @@ export class DefeatScene extends Phaser.Scene {
 
     // Jugador abatido
     const kicker = this.add
-      .sprite(250, 340, 'kicker_player', 'lament')
+      .sprite(250, 340, playerTextures(this).kicker, 'lament')
       .setOrigin(0.5, 1)
       .setScale(2)
       .setRotation(0.08)

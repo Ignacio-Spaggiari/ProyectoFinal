@@ -1,5 +1,6 @@
 // Genera todas las imágenes del juego por código (estilo cartoon plano / pixel art),
 // así el proyecto no depende de archivos externos.
+import { KITS, kitTexture } from '../skins.js';
 
 const KEEPER_FRAMES = ['idle', 'diveLeft', 'diveRight', 'jump', 'celebrate'];
 const KICKER_FRAMES = ['idle', 'run', 'kick', 'celebrate', 'lament'];
@@ -193,10 +194,9 @@ const KICKER_POSES = {
   lament: { lHand: [23, 64], rHand: [41, 64], lFoot: [28, 92], rFoot: [36, 92], headDY: 5 },
 };
 
-const PALETTES = {
-  kicker_player: { shirt: 0x2563eb, shorts: 0xffffff, socks: 0x2563eb, skin: 0xe0ac69, hair: 0x3b2314, number: 0xffffff },
+// Ropa de la CPU (las del jugador están en skins.js)
+const CPU_PALETTES = {
   kicker_cpu: { shirt: 0xdc2626, shorts: 0x111827, socks: 0xdc2626, skin: 0xc68642, hair: 0x111111, number: 0xffffff },
-  keeper_player: { shirt: 0xfacc15, shorts: 0x1f2937, socks: 0xfacc15, skin: 0xe0ac69, hair: 0x3b2314, gloves: 0x22c55e },
   keeper_cpu: { shirt: 0xf97316, shorts: 0x111827, socks: 0xf97316, skin: 0x8d5524, hair: 0x111111, gloves: 0xffffff },
 };
 
@@ -234,6 +234,29 @@ function drawFigure(g, ox, pose, pal, view) {
   g.fillRect(ox + 22, 49, 20, 13);
   g.fillStyle(pal.shirt);
   g.fillRoundedRect(ox + 21, 23, 22, 29, 4);
+
+  // Diseño de la camiseta: bastones, franjas horizontales o banda cruzada
+  if (pal.stripes) {
+    g.fillStyle(pal.stripes);
+    for (let x = 24; x < 42; x += 6) g.fillRect(ox + x, 24, 3, 27);
+  }
+  if (pal.hoops) {
+    g.fillStyle(pal.hoops);
+    g.fillRect(ox + 21, 33, 22, 3);
+    g.fillRect(ox + 21, 43, 22, 3);
+  }
+  if (pal.sash) {
+    g.fillStyle(pal.sash);
+    g.fillPoints(
+      [
+        { x: ox + 21, y: 24 },
+        { x: ox + 28, y: 24 },
+        { x: ox + 43, y: 44 },
+        { x: ox + 43, y: 52 },
+      ],
+      true
+    );
+  }
 
   if (view === 'back') {
     // Número 9 en la espalda
@@ -284,9 +307,8 @@ function drawFigure(g, ox, pose, pal, view) {
   });
 }
 
-function makeSheet(scene, g, key, frames, poses, view) {
+function makeSheet(scene, g, key, frames, poses, view, pal) {
   g.clear();
-  const pal = PALETTES[key];
   frames.forEach((name, i) => drawFigure(g, i * FRAME_W, poses[name], pal, view));
   g.generateTexture(key, frames.length * FRAME_W, FRAME_H);
   const tex = scene.textures.get(key);
@@ -294,10 +316,12 @@ function makeSheet(scene, g, key, frames, poses, view) {
 }
 
 function makeCharacters(scene, g) {
-  makeSheet(scene, g, 'keeper_player', KEEPER_FRAMES, KEEPER_POSES, 'front');
-  makeSheet(scene, g, 'keeper_cpu', KEEPER_FRAMES, KEEPER_POSES, 'front');
-  makeSheet(scene, g, 'kicker_player', KICKER_FRAMES, KICKER_POSES, 'back');
-  makeSheet(scene, g, 'kicker_cpu', KICKER_FRAMES, KICKER_POSES, 'back');
+  makeSheet(scene, g, 'keeper_cpu', KEEPER_FRAMES, KEEPER_POSES, 'front', CPU_PALETTES.keeper_cpu);
+  makeSheet(scene, g, 'kicker_cpu', KICKER_FRAMES, KICKER_POSES, 'back', CPU_PALETTES.kicker_cpu);
+  KITS.forEach((kit) => {
+    makeSheet(scene, g, kitTexture('keeper', kit.id), KEEPER_FRAMES, KEEPER_POSES, 'front', kit.keeper);
+    makeSheet(scene, g, kitTexture('kicker', kit.id), KICKER_FRAMES, KICKER_POSES, 'back', kit.kicker);
+  });
 }
 
 // ---------- Interfaz ----------

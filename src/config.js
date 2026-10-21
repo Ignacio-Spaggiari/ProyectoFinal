@@ -22,8 +22,8 @@ export const KICK_POS = { x: 469, y: 486 };
 export const KEEPER_SCALE = 1.25;
 export const KICKER_SCALE = 1.4;
 
-// Recorrido de la mira (un poco más ancho que el arco: se puede errar)
-export const AIM = { minX: 222, maxX: 738, minY: 92, maxY: 296, midY: 215 };
+// Recorrido de la mira: sobresale 70 px de cada palo, así se puede tirar afuera
+export const AIM = { minX: 170, maxX: 790, minY: 92, maxY: 296, midY: 215 };
 
 export const DIFFICULTIES = {
   facil: { key: 'facil', label: 'Fácil', guess: 0.15, aimSpeed: 300, reactionMs: 1000 },

@@ -26,6 +26,7 @@ import {
   pickHintSide,
 } from '../logic/penalty.js';
 import { addMuteButton } from '../ui/MuteButton.js';
+import { playerTextures } from '../skins.js';
 import { textStyle, playSfx, goTo } from '../ui/theme.js';
 
 const KEEPER_HOME = { x: 480, y: GOAL_LINE_Y };
@@ -51,6 +52,7 @@ export class MatchScene extends Phaser.Scene {
 
   create() {
     this.diff = DIFFICULTIES[this.registry.get('difficulty')] || DIFFICULTIES.normal;
+    this.kit = playerTextures(this);
     this.shootout = new Shootout();
     this.phase = 'intro';
     this.suddenDeathAnnounced = false;
@@ -83,7 +85,7 @@ export class MatchScene extends Phaser.Scene {
     this.keeper = this.add.sprite(KEEPER_HOME.x, KEEPER_HOME.y, 'keeper_cpu', 'idle').setOrigin(0.5, 1).setDepth(3);
     this.shadow = this.add.ellipse(BALL_SPOT.x, BALL_SPOT.y + 13, 28, 8, 0x000000, 0.35).setDepth(4);
     this.ball = this.add.image(BALL_SPOT.x, BALL_SPOT.y, 'ball').setDepth(5);
-    this.kicker = this.add.sprite(KICKER_START.x, KICKER_START.y, 'kicker_player', 'idle').setOrigin(0.5, 1).setDepth(6);
+    this.kicker = this.add.sprite(KICKER_START.x, KICKER_START.y, this.kit.kicker, 'idle').setOrigin(0.5, 1).setDepth(6);
 
     this.crosshair = this.add.image(0, 0, 'crosshair').setDepth(8).setVisible(false);
     this.tweens.add({ targets: this.crosshair, alpha: 0.65, scale: 1.15, duration: 220, yoyo: true, repeat: -1 });
@@ -276,12 +278,12 @@ export class MatchScene extends Phaser.Scene {
 
     const mine = shooter === 'player';
     this.kicker
-      .setTexture(mine ? 'kicker_player' : 'kicker_cpu', 'idle')
+      .setTexture(mine ? this.kit.kicker : 'kicker_cpu', 'idle')
       .setPosition(KICKER_START.x, KICKER_START.y)
       .setRotation(0)
       .setScale(KICKER_SCALE);
     this.keeper
-      .setTexture(mine ? 'keeper_cpu' : 'keeper_player', 'idle')
+      .setTexture(mine ? 'keeper_cpu' : this.kit.keeper, 'idle')
       .setPosition(KEEPER_HOME.x, KEEPER_HOME.y)
       .setRotation(0)
       .setScale(KEEPER_SCALE);

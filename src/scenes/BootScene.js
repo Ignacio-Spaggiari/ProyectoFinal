@@ -3,6 +3,7 @@ import { generateTextures } from '../gfx/textures.js';
 import { generateSounds } from '../audio/synth.js';
 import { textStyle } from '../ui/theme.js';
 import musicUrl from '../audio/cancionprincipal.mp3';
+import { loadKitId } from '../skins.js';
 
 /** Escena de Carga: carga la canción, genera imágenes y sonidos y pasa al menú. */
 export class BootScene extends Phaser.Scene {
@@ -12,6 +13,7 @@ export class BootScene extends Phaser.Scene {
 
   preload() {
     this.registry.set('difficulty', this.registry.get('difficulty') || 'normal');
+    this.registry.set('kit', this.registry.get('kit') || loadKitId());
 
     this.add.text(480, 220, 'PENALTY LOCK', textStyle(48, '#ffd23f', { stroke: '#000', strokeThickness: 8 })).setOrigin(0.5);
     this.label = this.add.text(480, 330, 'Cargando imágenes y sonidos...', textStyle(16)).setOrigin(0.5);

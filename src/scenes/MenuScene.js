@@ -3,6 +3,7 @@ import { DIFFICULTIES, DIFFICULTY_ORDER } from '../config.js';
 import { createButton, MenuNav } from '../ui/Button.js';
 import { addMuteButton } from '../ui/MuteButton.js';
 import { textStyle, goTo, playSfx, startMusic } from '../ui/theme.js';
+import { KITS, getKit, saveKitId } from '../skins.js';
 
 /** Menú principal: elegir dificultad, jugar o ver instrucciones. */
 export class MenuScene extends Phaser.Scene {
@@ -36,8 +37,9 @@ export class MenuScene extends Phaser.Scene {
       diffBtn.setLabel(diffLabel());
     };
 
-    const playBtn = createButton(this, 480, 280, 'JUGAR', () => goTo(this, 'Match'), { width: 380 });
-    const diffBtn = createButton(this, 480, 348, diffLabel(), () => changeDiff(1), { width: 380, size: 20 });
+    const size = { width: 380, height: 50 };
+    const playBtn = createButton(this, 480, 258, 'JUGAR', () => goTo(this, 'Match'), size);
+    const diffBtn = createButton(this, 480, 318, diffLabel(), () => changeDiff(1), { ...size, size: 20 });
     diffBtn.onLeft = () => {
       playSfx(this, 'click', { volume: 0.6 });
       changeDiff(-1);
@@ -46,14 +48,28 @@ export class MenuScene extends Phaser.Scene {
       playSfx(this, 'click', { volume: 0.6 });
       changeDiff(1);
     };
-    const helpBtn = createButton(this, 480, 416, 'INSTRUCCIONES', () => goTo(this, 'Instructions'), { width: 380 });
+    // Equipación: clic abre la pantalla de selección; flechas laterales la cambian acá mismo
+    const kitLabel = () => `EQUIPACIÓN: ◀ ${getKit(this.registry.get('kit')).name.toUpperCase()} ▶`;
+    const changeKit = (dir) => {
+      playSfx(this, 'click', { volume: 0.6 });
+      const i = KITS.findIndex((k) => k.id === getKit(this.registry.get('kit')).id);
+      const kit = KITS[(i + dir + KITS.length) % KITS.length];
+      this.registry.set('kit', kit.id);
+      saveKitId(kit.id);
+      kitBtn.setLabel(kitLabel());
+    };
+    const kitBtn = createButton(this, 480, 378, kitLabel(), () => goTo(this, 'Skins'), { ...size, size: 18 });
+    kitBtn.onLeft = () => changeKit(-1);
+    kitBtn.onRight = () => changeKit(1);
 
-    new MenuNav(this, [playBtn, diffBtn, helpBtn]);
+    const helpBtn = createButton(this, 480, 438, 'INSTRUCCIONES', () => goTo(this, 'Instructions'), size);
+
+    new MenuNav(this, [playBtn, diffBtn, kitBtn, helpBtn]);
 
     this.add
-      .text(480, 488, 'Mouse: clic en los botones  ·  Teclado: flechas + ENTER  ·  M: silenciar', textStyle(14, '#cbd5e1'))
+      .text(480, 494, 'Mouse: clic en los botones  ·  Teclado: flechas + ENTER  ·  M: silenciar', textStyle(14, '#cbd5e1'))
       .setOrigin(0.5);
-    this.add.text(480, 516, '© 4real studios', textStyle(12, '#94a3b8')).setOrigin(0.5);
+    this.add.text(480, 520, '© 4real studios', textStyle(12, '#94a3b8')).setOrigin(0.5);
 
     addMuteButton(this, 930, 30);
     startMusic(this);

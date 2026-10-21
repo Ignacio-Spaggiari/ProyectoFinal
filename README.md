@@ -46,12 +46,15 @@ src/
   gfx/textures.js      Gráficos generados por código
   audio/synth.js       Sonidos sintetizados con Web Audio
   ui/                  Botones, navegación con teclado y botón de silencio
-  scenes/              Boot (carga), Menu, Instructions, Match, Pause, Victory, Defeat
+  skins.js             Equipaciones del jugador (se recuerdan en el navegador)
+  scenes/              Boot (carga), Menu, Instructions, Skins, Match, Pause, Victory, Defeat
 ```
 
 ## Créditos y licencias
 
 Todos los gráficos (estadio, arco, pelota, jugadores, trofeo, íconos) y todos los sonidos (hinchada, patada, gol, atajada, palo, silbato, jingles) se **generan por código** dentro del proyecto, por lo que no se usan assets de terceros.
+
+- Música: `src/audio/cancionprincipal.mp3` (canción principal en bucle, aportada por el autor del proyecto).
 
 - Motor: [Phaser 3](https://phaser.io/) — Licencia MIT.
 - Herramienta de build: [Vite](https://vitejs.dev/) — Licencia MIT.

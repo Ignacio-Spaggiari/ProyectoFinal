@@ -33,6 +33,12 @@ Se abre en `http://localhost:5173`. Para generar la versión final: `npm run bui
 - **Arquero CPU:** elige zona con pesos (más abajo y al centro) y "lee" el tiro con 15 % / 25 % / 35 % según la dificultad. La velocidad de la mira también depende de la dificultad.
 - **Atajar:** el pateador CPU toma carrera (1 s) y su cuerpo se inclina hacia el lado del tiro el 60 % de las veces. Hay una ventana de reacción (0,8 s en Normal) para elegir zona; si no se elige, el arquero queda en el centro. La CPU erra (afuera o palo) el 10 % de las veces.
 - **Tanda:** 5 penales por lado alternados, definición anticipada y muerte súbita.
+- **Torneo (3 niveles):** se empieza en cuartos de final; ganando se pasa a la semifinal y luego a la final. Al perder se puede reintentar la misma fase.
+  - **Cuartos:** sin barrera.
+  - **Semifinal:** un hombre barrera cerca de uno de los palos (al azar).
+  - **Final:** dos hombres barrera, uno a cada lado del arquero, sin tapar los tiros ajustados a los palos.
+  - Los hombres barrera no se mueven y solo tapan los tiros que van hacia su cuerpo; el arquero se sigue tirando normalmente.
+- **Equipaciones:** 6 equipaciones para el jugador (pateador y arquero), elegibles desde el menú.
 
 ## Estructura
 

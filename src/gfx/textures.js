@@ -194,6 +194,8 @@ const KICKER_POSES = {
   lament: { lHand: [23, 64], rHand: [41, 64], lFoot: [28, 92], rFoot: [36, 92], headDY: 5 },
 };
 
+const DEFENDER_POSE = { lHand: [28, 52], rHand: [36, 52], lFoot: [24, 92], rFoot: [40, 92] };
+
 // Ropa de la CPU (las del jugador están en skins.js)
 const CPU_PALETTES = {
   kicker_cpu: { shirt: 0xdc2626, shorts: 0x111827, socks: 0xdc2626, skin: 0xc68642, hair: 0x111111, number: 0xffffff },
@@ -318,6 +320,8 @@ function makeSheet(scene, g, key, frames, poses, view, pal) {
 function makeCharacters(scene, g) {
   makeSheet(scene, g, 'keeper_cpu', KEEPER_FRAMES, KEEPER_POSES, 'front', CPU_PALETTES.keeper_cpu);
   makeSheet(scene, g, 'kicker_cpu', KICKER_FRAMES, KICKER_POSES, 'back', CPU_PALETTES.kicker_cpu);
+  // Hombre barrera: defensor de la CPU de frente, con las manos juntas adelante
+  makeSheet(scene, g, 'defender_cpu', ['wall'], { wall: DEFENDER_POSE }, 'front', CPU_PALETTES.kicker_cpu);
   KITS.forEach((kit) => {
     makeSheet(scene, g, kitTexture('keeper', kit.id), KEEPER_FRAMES, KEEPER_POSES, 'front', kit.keeper);
     makeSheet(scene, g, kitTexture('kicker', kit.id), KICKER_FRAMES, KICKER_POSES, 'back', kit.kicker);

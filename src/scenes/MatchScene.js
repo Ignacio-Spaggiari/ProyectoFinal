@@ -7,6 +7,8 @@ import {
   KICK_POS,
   KEEPER_SCALE,
   KICKER_SCALE,
+  BARRIER,
+  STAGES,
   AIM,
   DIFFICULTIES,
   POWER,
@@ -21,6 +23,7 @@ import {
   zoneColRow,
   zoneRect,
   isSaved,
+  hitsBarrier,
   chooseKeeperZone,
   pickCpuShot,
   pickHintSide,
@@ -53,6 +56,9 @@ export class MatchScene extends Phaser.Scene {
   create() {
     this.diff = DIFFICULTIES[this.registry.get('difficulty')] || DIFFICULTIES.normal;
     this.kit = playerTextures(this);
+    this.stageIndex = Phaser.Math.Clamp(this.registry.get('stage') || 0, 0, STAGES.length - 1);
+    this.stage = STAGES[this.stageIndex];
+    this.barrierXs = this.stage.barriers();
     this.shootout = new Shootout();
     this.phase = 'intro';
     this.suddenDeathAnnounced = false;
@@ -68,7 +74,7 @@ export class MatchScene extends Phaser.Scene {
     this.resetActors('player');
     this.time.delayedCall(350, () => {
       playSfx(this, 'whistle', { volume: 0.6 });
-      this.showBanner('¡A LOS PENALES!', '#ffffff', 900);
+      this.showBanner(this.stage.name.toUpperCase(), '#ffd23f', 900, 60);
     });
     this.time.delayedCall(1500, () => this.nextTurn());
   }
@@ -82,6 +88,10 @@ export class MatchScene extends Phaser.Scene {
     });
 
     this.goal = this.add.image(GOAL.x, GOAL.y, 'goal').setOrigin(0).setDepth(2);
+    // Hombres barrera: delante del arquero y quietos todo el partido
+    this.barriers = this.barrierXs.map((x) =>
+      this.add.sprite(x, BARRIER.feetY, 'defender_cpu', 'wall').setOrigin(0.5, 1).setScale(BARRIER.scale).setDepth(4)
+    );
     this.keeper = this.add.sprite(KEEPER_HOME.x, KEEPER_HOME.y, 'keeper_cpu', 'idle').setOrigin(0.5, 1).setDepth(3);
     this.shadow = this.add.ellipse(BALL_SPOT.x, BALL_SPOT.y + 13, 28, 8, 0x000000, 0.35).setDepth(4);
     this.ball = this.add.image(BALL_SPOT.x, BALL_SPOT.y, 'ball').setDepth(5);
@@ -131,7 +141,7 @@ export class MatchScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setDepth(11);
     this.add
-      .text(944, 46, `Dificultad: ${this.diff.label}`, textStyle(13, '#ffffff', { stroke: '#000', strokeThickness: 4 }))
+      .text(944, 46, `${this.stage.name} · ${this.diff.label}`, textStyle(13, '#ffd23f', { stroke: '#000', strokeThickness: 4 }))
       .setOrigin(1, 0)
       .setDepth(11);
 
@@ -266,6 +276,7 @@ export class MatchScene extends Phaser.Scene {
       cpu: this.shootout.cpuGoals,
       suddenDeath: this.shootout.player.length > this.shootout.regulation,
       difficulty: this.diff.label,
+      stage: this.stageIndex,
     };
     this.time.delayedCall(1700, () => goTo(this, winner === 'player' ? 'Victory' : 'Defeat', data));
   }
@@ -287,6 +298,8 @@ export class MatchScene extends Phaser.Scene {
       .setPosition(KEEPER_HOME.x, KEEPER_HOME.y)
       .setRotation(0)
       .setScale(KEEPER_SCALE);
+    // Los hombres barrera son de la CPU: solo están cuando patea el jugador
+    this.barriers.forEach((b) => b.setVisible(mine));
   }
 
   // ---------------------------------------------------------------- turno del jugador (patear)
@@ -337,6 +350,7 @@ export class MatchScene extends Phaser.Scene {
     let result;
     if (where === 'post') result = 'palo';
     else if (where === 'out') result = 'afuera';
+    else if (hitsBarrier(tx, ty, this.barrierXs)) result = 'barrera';
     else result = isSaved(shotZone, keeperZone, power < POWER.weak) ? 'atajado' : 'gol';
 
     this.runUp(450, 0, () => {
@@ -498,6 +512,19 @@ export class MatchScene extends Phaser.Scene {
       this.keeper.setFrame('celebrate');
       this.showBanner('¡ATAJADO!', mine ? '#f87171' : '#4ade80');
       if (!mine) this.confetti.explode(40, 480, 230);
+    } else if (result === 'barrera') {
+      // Rebota en el hombre barrera (que no se mueve)
+      playSfx(this, 'save', { volume: 0.8 });
+      this.tweens.add({
+        targets: ball,
+        x: tx + Phaser.Math.Between(-60, 60),
+        y: 430,
+        scale: 0.85,
+        duration: 450,
+        ease: 'Quad.easeOut',
+      });
+      this.kicker.setFrame('lament');
+      this.showBanner('¡BARRERA!', '#f87171');
     } else if (result === 'palo') {
       playSfx(this, 'post', { volume: 0.8 });
       this.tweens.add({
@@ -527,9 +554,9 @@ export class MatchScene extends Phaser.Scene {
     this.time.delayedCall(1900, () => this.nextTurn());
   }
 
-  showBanner(text, color, hold = 1100) {
+  showBanner(text, color, hold = 1100, size = 72) {
     const banner = this.add
-      .text(480, 200, text, textStyle(72, color, { stroke: '#0b1220', strokeThickness: 12 }))
+      .text(480, 200, text, textStyle(size, color, { stroke: '#0b1220', strokeThickness: 12 }))
       .setOrigin(0.5)
       .setDepth(30)
       .setScale(0);

@@ -38,7 +38,12 @@ export class MenuScene extends Phaser.Scene {
     };
 
     const size = { width: 380, height: 50 };
-    const playBtn = createButton(this, 480, 258, 'JUGAR', () => goTo(this, 'Match'), size);
+    // El torneo siempre empieza en cuartos de final
+    const startTournament = () => {
+      this.registry.set('stage', 0);
+      goTo(this, 'Match');
+    };
+    const playBtn = createButton(this, 480, 258, 'JUGAR TORNEO', startTournament, size);
     const diffBtn = createButton(this, 480, 318, diffLabel(), () => changeDiff(1), { ...size, size: 20 });
     diffBtn.onLeft = () => {
       playSfx(this, 'click', { volume: 0.6 });

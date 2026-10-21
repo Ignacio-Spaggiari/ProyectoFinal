@@ -50,6 +50,24 @@ export const KEEPER_WEIGHTS = [0.6, 1.0, 0.6, 1.2, 1.5, 1.2];
 
 export const REGULATION_KICKS = 5;
 
+// Hombres barrera (defensores de la CPU parados delante del arco). No se mueven:
+// solo tapan los tiros del jugador que van directo hacia su cuerpo.
+export const BARRIER = {
+  feetY: 318, // un poco delante de la línea del arco
+  scale: 1.2,
+  halfWidth: 19, // medio ancho del cuerpo + radio de la pelota
+  top: 210, // altura de la cabeza: los tiros más altos pasan por arriba
+};
+
+// Torneo: cuartos -> semifinal -> final. barriers() devuelve la X de cada hombre barrera.
+export const STAGES = [
+  { key: 'cuartos', name: 'Cuartos de final', short: 'CUARTOS', barriers: () => [] },
+  // Uno pegado a un palo (al azar), dejando libre el tiro bien ajustado al poste
+  { key: 'semi', name: 'Semifinal', short: 'SEMIFINAL', barriers: () => [Math.random() < 0.5 ? 312 : 648] },
+  // Uno a cada lado del arquero, sin tapar los tiros ajustados a los palos
+  { key: 'final', name: 'Final', short: 'FINAL', barriers: () => [392, 568] },
+];
+
 // Teclas para atajar: Q W E (arriba) / A S D (abajo)
 export const ZONE_KEYS = { q: 1, w: 2, e: 3, a: 4, s: 5, d: 6 };
 export const ZONE_LABELS = ['Q', 'W', 'E', 'A', 'S', 'D'];

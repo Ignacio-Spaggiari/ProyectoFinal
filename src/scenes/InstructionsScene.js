@@ -23,11 +23,12 @@ const SECTIONS = [
     ],
   },
   {
-    title: 'LA TANDA',
+    title: 'EL TORNEO',
     lines: [
-      '5 penales por lado. Si un equipo ya no puede alcanzar al otro, termina antes.',
-      'Si hay empate después de 5, se sigue de a uno por lado: ¡muerte súbita!',
-      'ESC: pausa   ·   M: silenciar',
+      'Cuartos, semifinal y final: ganá la tanda para pasar de fase.',
+      '5 penales por lado (termina antes si uno ya no alcanza). Empate: muerte súbita.',
+      'Semifinal: 1 hombre barrera cerca de un palo. Final: 2, uno a cada lado del arquero.',
+      'Las barreras no se mueven: solo tapan si les pateás encima. ESC: pausa · M: silenciar',
     ],
   },
 ];

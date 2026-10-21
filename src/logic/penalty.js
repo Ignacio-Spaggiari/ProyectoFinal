@@ -1,5 +1,5 @@
 // Reglas de un penal: zonas del arco, palos, atajadas y decisiones de la CPU.
-import { GOAL, INNER, KEEPER_WEIGHTS, CPU } from '../config.js';
+import { GOAL, INNER, KEEPER_WEIGHTS, CPU, BARRIER } from '../config.js';
 
 const COL_W = (INNER.right - INNER.left) / 3;
 const ROW_H = (INNER.bottom - INNER.top) / 2;
@@ -51,6 +51,11 @@ export function classifyPoint(x, y) {
   }
   if (x < INNER.left || x > INNER.right || y < INNER.top) return 'out';
   return 'in';
+}
+
+/** true si el tiro va directo al cuerpo de algún hombre barrera. */
+export function hitsBarrier(x, y, barrierXs) {
+  return y >= BARRIER.top && barrierXs.some((bx) => Math.abs(x - bx) <= BARRIER.halfWidth);
 }
 
 /** Atajada si el arquero eligió la zona exacta, o una vecina cuando el tiro es débil. */

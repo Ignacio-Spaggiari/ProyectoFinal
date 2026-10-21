@@ -1,0 +1,61 @@
+import Phaser from 'phaser';
+import { DIFFICULTIES, DIFFICULTY_ORDER } from '../config.js';
+import { createButton, MenuNav } from '../ui/Button.js';
+import { addMuteButton } from '../ui/MuteButton.js';
+import { textStyle, goTo, playSfx } from '../ui/theme.js';
+
+/** Menú principal: elegir dificultad, jugar o ver instrucciones. */
+export class MenuScene extends Phaser.Scene {
+  constructor() {
+    super('Menu');
+  }
+
+  create() {
+    this.add.image(0, 0, 'stadium').setOrigin(0);
+    this.add.rectangle(0, 0, 960, 540, 0x050b1f, 0.55).setOrigin(0);
+    this.add.image(240, 110, 'goal').setOrigin(0).setAlpha(0.35);
+
+    const title = this.add
+      .text(480, 96, 'PENALTY LOCK', textStyle(76, '#ffd23f', { stroke: '#0b1220', strokeThickness: 12 }))
+      .setOrigin(0.5);
+    this.tweens.add({ targets: title, scale: 1.04, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+
+    this.add
+      .text(480, 160, 'Apuntá, cargá la potencia y adiviná el palo del rival', textStyle(18, '#ffffff'))
+      .setOrigin(0.5);
+
+    const ball = this.add.image(480, 205, 'ball').setScale(1.3);
+    this.tweens.add({ targets: ball, y: 190, duration: 420, yoyo: true, repeat: -1, ease: 'Quad.easeOut' });
+    this.tweens.add({ targets: ball, angle: 360, duration: 2000, repeat: -1 });
+
+    const diffLabel = () => `DIFICULTAD: ◀ ${DIFFICULTIES[this.registry.get('difficulty')].label.toUpperCase()} ▶`;
+    const changeDiff = (dir) => {
+      const i = DIFFICULTY_ORDER.indexOf(this.registry.get('difficulty'));
+      const next = DIFFICULTY_ORDER[(i + dir + DIFFICULTY_ORDER.length) % DIFFICULTY_ORDER.length];
+      this.registry.set('difficulty', next);
+      diffBtn.setLabel(diffLabel());
+    };
+
+    const playBtn = createButton(this, 480, 280, 'JUGAR', () => goTo(this, 'Match'), { width: 380 });
+    const diffBtn = createButton(this, 480, 348, diffLabel(), () => changeDiff(1), { width: 380, size: 20 });
+    diffBtn.onLeft = () => {
+      playSfx(this, 'click', { volume: 0.6 });
+      changeDiff(-1);
+    };
+    diffBtn.onRight = () => {
+      playSfx(this, 'click', { volume: 0.6 });
+      changeDiff(1);
+    };
+    const helpBtn = createButton(this, 480, 416, 'INSTRUCCIONES', () => goTo(this, 'Instructions'), { width: 380 });
+
+    new MenuNav(this, [playBtn, diffBtn, helpBtn]);
+
+    this.add
+      .text(480, 488, 'Mouse: clic en los botones  ·  Teclado: flechas + ENTER  ·  M: silenciar', textStyle(14, '#cbd5e1'))
+      .setOrigin(0.5);
+    this.add.text(480, 516, '© 4real studios', textStyle(12, '#94a3b8')).setOrigin(0.5);
+
+    addMuteButton(this, 930, 30);
+    this.cameras.main.fadeIn(300, 0, 0, 0);
+  }
+}

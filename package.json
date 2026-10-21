@@ -1,0 +1,18 @@
+{
+  "name": "penalty-lock",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Penalty Lock - juego de tanda de penales en Phaser 3 + Vite",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}

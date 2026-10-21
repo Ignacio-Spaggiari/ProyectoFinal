@@ -38,6 +38,7 @@ Se abre en `http://localhost:5173`. Para generar la versión final: `npm run bui
   - **Semifinal:** un hombre barrera cerca de uno de los palos (al azar).
   - **Final:** dos hombres barrera, uno a cada lado del arquero, sin tapar los tiros ajustados a los palos.
   - Los hombres barrera no se mueven y solo tapan los tiros que van hacia su cuerpo; el arquero se sigue tirando normalmente.
+- **Festejo:** después de cada gol (del jugador o de la CPU) hay una escena corta del que convirtió festejando en el córner con su hinchada. Se puede saltar con ESPACIO o clic.
 - **Equipaciones:** 6 equipaciones para el jugador (pateador y arquero), elegibles desde el menú.
 
 ## Estructura

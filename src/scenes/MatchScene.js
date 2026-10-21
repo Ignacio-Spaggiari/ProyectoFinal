@@ -29,6 +29,7 @@ import {
   pickHintSide,
 } from '../logic/penalty.js';
 import { addMuteButton } from '../ui/MuteButton.js';
+import { playCelebration } from './celebration.js';
 import { playerTextures } from '../skins.js';
 import { textStyle, playSfx, goTo } from '../ui/theme.js';
 
@@ -317,7 +318,9 @@ export class MatchScene extends Phaser.Scene {
   }
 
   onAction() {
-    if (this.phase === 'aimX') {
+    if (this.phase === 'celebration') {
+      if (this.celebration) this.celebration.skip();
+    } else if (this.phase === 'aimX') {
       this.phase = 'aimY';
       this.aimElapsed = 0;
       this.setInfo('Clic o ESPACIO para fijar la ALTURA');
@@ -551,7 +554,32 @@ export class MatchScene extends Phaser.Scene {
       this.showBanner('¡AFUERA!', '#e5e7eb');
     }
 
-    this.time.delayedCall(1900, () => this.nextTurn());
+    if (result === 'gol') {
+      // Después del cartel de gol, festejo en el córner con la hinchada
+      this.time.delayedCall(1300, () => this.startCelebration(shooter));
+    } else {
+      this.time.delayedCall(1900, () => this.nextTurn());
+    }
+  }
+
+  startCelebration(shooter) {
+    const mine = shooter === 'player';
+    this.phase = 'celebration';
+    this.celebration = playCelebration(
+      this,
+      {
+        kicker: mine ? this.kit.kicker : 'kicker_cpu',
+        fans: mine ? this.kit.fans : 'fan_cpu',
+        title: mine ? '¡GOOOL!' : '¡GOL DE LA CPU!',
+        color: mine ? '#4ade80' : '#f87171',
+        colorHex: mine ? 0x4ade80 : 0xf87171,
+        score: `JUGADOR  ${this.shootout.playerGoals} – ${this.shootout.cpuGoals}  CPU`,
+      },
+      () => {
+        this.celebration = null;
+        this.nextTurn();
+      }
+    );
   }
 
   showBanner(text, color, hold = 1100, size = 72) {

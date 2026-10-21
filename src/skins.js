@@ -78,5 +78,5 @@ export function saveKitId(id) {
 /** Texturas del jugador según la equipación elegida (guardada en el registry). */
 export function playerTextures(scene) {
   const id = getKit(scene.registry.get('kit')).id;
-  return { kicker: kitTexture('kicker', id), keeper: kitTexture('keeper', id) };
+  return { kicker: kitTexture('kicker', id), keeper: kitTexture('keeper', id), fans: kitTexture('fan', id) };
 }

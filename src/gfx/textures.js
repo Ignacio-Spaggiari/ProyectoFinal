@@ -22,6 +22,7 @@ export function generateTextures(scene) {
   makeGoal(g);
   makeBall(g);
   makeCharacters(scene, g);
+  makeCorner(g);
   makeUi(g);
   makeTrophy(g);
   makeDefeat(g);
@@ -325,7 +326,72 @@ function makeCharacters(scene, g) {
   KITS.forEach((kit) => {
     makeSheet(scene, g, kitTexture('keeper', kit.id), KEEPER_FRAMES, KEEPER_POSES, 'front', kit.keeper);
     makeSheet(scene, g, kitTexture('kicker', kit.id), KICKER_FRAMES, KICKER_POSES, 'back', kit.kicker);
+    // Hinchas con la camiseta de cada equipación (para el festejo en el córner)
+    makeSheet(scene, g, kitTexture('fan', kit.id), FAN_FRAMES, FAN_POSES, 'front', kit.kicker);
   });
+  makeSheet(scene, g, 'fan_cpu', FAN_FRAMES, FAN_POSES, 'front', CPU_PALETTES.kicker_cpu);
+  makeSheet(scene, g, 'fan_neutral', FAN_FRAMES, FAN_POSES, 'front', NEUTRAL_FAN);
+}
+
+// ---------- Festejo en el córner ----------
+
+const FAN_FRAMES = ['down', 'up'];
+const FAN_POSES = {
+  down: { lHand: [17, 50], rHand: [47, 50], lFoot: [26, 92], rFoot: [38, 92] },
+  up: { lHand: [11, 7], rHand: [53, 7], lFoot: [26, 92], rFoot: [38, 92] },
+};
+const NEUTRAL_FAN = { shirt: 0xf1f5f9, shorts: 0x334155, socks: 0xf1f5f9, skin: 0xc68642, hair: 0x111111 };
+
+/** Fondo del festejo: tribuna cercana llena de gente y el césped junto al córner. */
+function makeCorner(g) {
+  const rnd = seeded(77);
+  g.clear();
+  g.fillStyle(0x0b1530);
+  g.fillRect(0, 0, 960, 40);
+  g.fillStyle(0x1b2340);
+  g.fillRect(0, 40, 960, 260);
+
+  // Hinchas grandes (más cerca que en el estadio)
+  const shirts = [0x2563eb, 0x60a5fa, 0xffffff, 0xdc2626, 0xfacc15, 0x1e3a8a, 0xf97316, 0x9ca3af, 0x16a34a];
+  const skins = [0xf1c27d, 0xe0ac69, 0xc68642, 0x8d5524, 0xffdbac];
+  for (let row = 0; row < 9; row++) {
+    const y = 44 + row * 28;
+    if (row % 3 === 2) {
+      g.fillStyle(0x10162b);
+      g.fillRect(0, y + 22, 960, 6);
+    }
+    for (let x = 4 + (row % 2) * 11; x < 960; x += 22) {
+      if (rnd() < 0.06) continue;
+      const skin = skins[Math.floor(rnd() * skins.length)];
+      g.fillStyle(shirts[Math.floor(rnd() * shirts.length)]);
+      g.fillRect(x, y + 10, 16, 14);
+      g.fillStyle(skin);
+      g.fillRect(x + 3, y, 10, 10);
+      if (rnd() < 0.35) {
+        // brazos arriba
+        g.fillRect(x - 2, y - 6, 3, 14);
+        g.fillRect(x + 15, y - 6, 3, 14);
+      }
+    }
+  }
+
+  // Césped
+  let alt = false;
+  for (let y = 300; y < 540; y += 34) {
+    g.fillStyle(alt ? 0x3c9d48 : 0x46ad52);
+    g.fillRect(0, y, 960, 34);
+    alt = !alt;
+  }
+
+  // Línea de banda, línea de fondo y arco del córner
+  g.lineStyle(5, 0xffffff, 0.9);
+  g.lineBetween(0, 372, 860, 372);
+  g.lineBetween(860, 372, 990, 560);
+  g.beginPath();
+  g.arc(860, 372, 46, Math.PI * 0.32, Math.PI);
+  g.strokePath();
+
+  g.generateTexture('corner_bg', 960, 540);
 }
 
 // ---------- Interfaz ----------

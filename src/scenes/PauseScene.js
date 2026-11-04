@@ -36,7 +36,6 @@ export class PauseScene extends Phaser.Scene {
     // Se espera un instante para que el mismo ESC que abrió la pausa no la cierre.
     this.time.delayedCall(200, () => this.input.keyboard.on('keydown-ESC', resume));
 
-    this.add.text(480, 470, 'ESC: continuar', textStyle(14, '#cbd5e1')).setOrigin(0.5);
     addMuteButton(this, 68, 28);
   }
 }

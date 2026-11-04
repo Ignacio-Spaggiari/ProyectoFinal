@@ -41,7 +41,7 @@ export function playCelebration(scene, opts, onDone) {
     board.fillRect(i * 240 + 3, 298, 234, 38);
   });
   layer.add(board);
-  ['PENALTY LOCK', '4REAL STUDIOS', 'PENALTY LOCK', '¡VAMOS!'].forEach((t, i) =>
+  ['PENALTY LOCK', '4REAL STUDIOS', 'PENALTY LOCK', '4REAL STUDIOS'].forEach((t, i) =>
     layer.add(scene.add.text(i * 240 + 120, 317, t, textStyle(18, '#ffffff')).setOrigin(0.5))
   );
 
@@ -77,8 +77,7 @@ export function playCelebration(scene, opts, onDone) {
   const score = scene.add
     .text(480, 508, opts.score, textStyle(24, '#ffffff', { stroke: '#000', strokeThickness: 6 }))
     .setOrigin(0.5);
-  const hint = scene.add.text(944, 530, 'ESPACIO / clic: saltar', textStyle(12, '#cbd5e1')).setOrigin(1, 1);
-  layer.add([title, score, hint]);
+  layer.add([title, score]);
 
   const later = (ms, fn) => timers.push(scene.time.delayedCall(ms, fn));
 

@@ -48,7 +48,11 @@ const sweep = (elapsedMs, speed, min, max) => {
   return min + (d <= range ? d : 2 * range - d);
 };
 
+// Cartel único para cualquier penal que no termina en gol (atajado, barrera, palo o afuera)
+const MISS_TEXT = '¡NO ENTRÓ!';
+
 /** Escena del partido: tanda de penales y muerte súbita. */
+
 export class MatchScene extends Phaser.Scene {
   constructor() {
     super('Match');
@@ -84,7 +88,7 @@ export class MatchScene extends Phaser.Scene {
 
   createField() {
     this.add.image(0, 0, 'stadium').setOrigin(0);
-    ['PENALTY LOCK', '4REAL STUDIOS', 'PHASER 3', 'PENALTY LOCK', '4REAL STUDIOS', '¡VAMOS!'].forEach((t, i) => {
+    ['PENALTY LOCK', '4REAL STUDIOS', 'PHASER 3', 'PENALTY LOCK', '4REAL STUDIOS', 'PHASER 3'].forEach((t, i) => {
       this.add.text(i * 160 + 80, 249, t, textStyle(13, '#ffffff')).setOrigin(0.5).setAlpha(0.9);
     });
 
@@ -275,8 +279,6 @@ export class MatchScene extends Phaser.Scene {
     const data = {
       player: this.shootout.playerGoals,
       cpu: this.shootout.cpuGoals,
-      suddenDeath: this.shootout.player.length > this.shootout.regulation,
-      difficulty: this.diff.label,
       stage: this.stageIndex,
     };
     this.time.delayedCall(1700, () => goTo(this, winner === 'player' ? 'Victory' : 'Defeat', data));
@@ -513,7 +515,7 @@ export class MatchScene extends Phaser.Scene {
       });
       this.kicker.setFrame('lament');
       this.keeper.setFrame('celebrate');
-      this.showBanner('¡ATAJADO!', mine ? '#f87171' : '#4ade80');
+      this.showBanner(MISS_TEXT, mine ? '#f87171' : '#4ade80');
       if (!mine) this.confetti.explode(40, 480, 230);
     } else if (result === 'barrera') {
       // Rebota en el hombre barrera (que no se mueve)
@@ -527,7 +529,7 @@ export class MatchScene extends Phaser.Scene {
         ease: 'Quad.easeOut',
       });
       this.kicker.setFrame('lament');
-      this.showBanner('¡BARRERA!', '#f87171');
+      this.showBanner(MISS_TEXT, '#f87171');
     } else if (result === 'palo') {
       playSfx(this, 'post', { volume: 0.8 });
       this.tweens.add({
@@ -539,7 +541,7 @@ export class MatchScene extends Phaser.Scene {
         ease: 'Quad.easeOut',
       });
       this.kicker.setFrame('lament');
-      this.showBanner('¡AL PALO!', '#e5e7eb');
+      this.showBanner(MISS_TEXT, '#e5e7eb');
     } else {
       playSfx(this, 'miss', { volume: 0.7 });
       this.tweens.add({
@@ -551,7 +553,7 @@ export class MatchScene extends Phaser.Scene {
         duration: 350,
       });
       this.kicker.setFrame('lament');
-      this.showBanner('¡AFUERA!', '#e5e7eb');
+      this.showBanner(MISS_TEXT, '#e5e7eb');
     }
 
     if (result === 'gol') {

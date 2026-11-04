@@ -16,7 +16,6 @@ export class BootScene extends Phaser.Scene {
     this.registry.set('kit', this.registry.get('kit') || loadKitId());
 
     this.add.text(480, 220, 'PENALTY LOCK', textStyle(48, '#ffd23f', { stroke: '#000', strokeThickness: 8 })).setOrigin(0.5);
-    this.label = this.add.text(480, 330, 'Cargando imágenes y sonidos...', textStyle(16)).setOrigin(0.5);
     const box = this.add.graphics();
     box.fillStyle(0xffffff, 0.15);
     box.fillRoundedRect(330, 290, 300, 20, 8);
@@ -33,8 +32,7 @@ export class BootScene extends Phaser.Scene {
 
   create() {
     generateTextures(this);
-    const audioOk = generateSounds(this);
-    if (!audioOk) this.label.setText('Tu navegador no soporta Web Audio: el juego va sin sonido.');
-    this.time.delayedCall(audioOk ? 200 : 1200, () => this.scene.start('Menu'));
+    generateSounds(this);
+    this.time.delayedCall(200, () => this.scene.start('Menu'));
   }
 }

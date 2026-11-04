@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { buildResultScreen, drawBracket } from './resultScreen.js';
-import { STAGES } from '../config.js';
 import { textStyle, playSfx } from '../ui/theme.js';
 import { playerTextures } from '../skins.js';
 
@@ -36,10 +35,6 @@ export class DefeatScene extends Phaser.Scene {
     this.tweens.add({ targets: kicker, scaleY: 1.94, duration: 1200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.add.sprite(710, 340, 'kicker_cpu', 'celebrate').setOrigin(0.5, 1).setScale(2).setDepth(10).setAlpha(0.8);
 
-    this.add
-      .text(480, 334, `Quedaste afuera en ${STAGES[stage].name.toLowerCase()}. ¡Revancha!`, textStyle(18, '#ffffff'))
-      .setOrigin(0.5)
-      .setDepth(10);
     playSfx(this, 'defeat', { volume: 0.7 });
   }
 }

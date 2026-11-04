@@ -11,15 +11,11 @@ export function buildResultScreen(scene, data, overlayAlpha, playAgain) {
   scene.add.image(0, 0, 'stadium').setOrigin(0);
   scene.add.rectangle(0, 0, 960, 540, 0x050b1f, overlayAlpha).setOrigin(0);
 
-  const { player = 0, cpu = 0, suddenDeath = false, difficulty = '' } = data || {};
+  const { player = 0, cpu = 0 } = data || {};
 
   scene.add
     .text(480, 372, `JUGADOR  ${player} – ${cpu}  CPU`, textStyle(30, '#ffffff', { stroke: '#000', strokeThickness: 6 }))
     .setOrigin(0.5);
-  const detail = [suddenDeath ? 'Definido por muerte súbita' : 'Tanda regular', difficulty && `Dificultad: ${difficulty}`]
-    .filter(Boolean)
-    .join('  ·  ');
-  scene.add.text(480, 406, detail, textStyle(14, '#cbd5e1')).setOrigin(0.5);
 
   const play = () => {
     scene.registry.set('stage', playAgain.stage);

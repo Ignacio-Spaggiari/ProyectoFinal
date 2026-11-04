@@ -54,7 +54,7 @@ src/
   audio/synth.js       Sonidos sintetizados con Web Audio
   ui/                  Botones, navegación con teclado y botón de silencio
   skins.js             Equipaciones del jugador (se recuerdan en el navegador)
-  scenes/              Boot (carga), Menu, Instructions, Skins, Match, Pause, Victory, Defeat
+  scenes/              Boot (carga), Menu, Skins, Match, Pause, Victory, Defeat
 ```
 
 ## Créditos y licencias

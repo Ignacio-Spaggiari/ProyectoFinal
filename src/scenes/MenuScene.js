@@ -5,7 +5,7 @@ import { addMuteButton } from '../ui/MuteButton.js';
 import { textStyle, goTo, playSfx, startMusic } from '../ui/theme.js';
 import { KITS, getKit, saveKitId } from '../skins.js';
 
-/** Menú principal: elegir dificultad, jugar o ver instrucciones. */
+/** Menú principal: elegir dificultad, elegir equipación y jugar. */
 export class MenuScene extends Phaser.Scene {
   constructor() {
     super('Menu');
@@ -43,8 +43,8 @@ export class MenuScene extends Phaser.Scene {
       this.registry.set('stage', 0);
       goTo(this, 'Match');
     };
-    const playBtn = createButton(this, 480, 258, 'JUGAR TORNEO', startTournament, size);
-    const diffBtn = createButton(this, 480, 318, diffLabel(), () => changeDiff(1), { ...size, size: 20 });
+    const playBtn = createButton(this, 480, 280, 'JUGAR TORNEO', startTournament, size);
+    const diffBtn = createButton(this, 480, 350, diffLabel(), () => changeDiff(1), { ...size, size: 20 });
     diffBtn.onLeft = () => {
       playSfx(this, 'click', { volume: 0.6 });
       changeDiff(-1);
@@ -63,13 +63,11 @@ export class MenuScene extends Phaser.Scene {
       saveKitId(kit.id);
       kitBtn.setLabel(kitLabel());
     };
-    const kitBtn = createButton(this, 480, 378, kitLabel(), () => goTo(this, 'Skins'), { ...size, size: 18 });
+    const kitBtn = createButton(this, 480, 420, kitLabel(), () => goTo(this, 'Skins'), { ...size, size: 18 });
     kitBtn.onLeft = () => changeKit(-1);
     kitBtn.onRight = () => changeKit(1);
 
-    const helpBtn = createButton(this, 480, 438, 'INSTRUCCIONES', () => goTo(this, 'Instructions'), size);
-
-    new MenuNav(this, [playBtn, diffBtn, kitBtn, helpBtn]);
+    new MenuNav(this, [playBtn, diffBtn, kitBtn]);
 
     this.add
       .text(480, 494, 'Mouse: clic en los botones  ·  Teclado: flechas + ENTER  ·  M: silenciar', textStyle(14, '#cbd5e1'))

@@ -3,6 +3,8 @@ import { buildResultScreen, drawBracket } from './resultScreen.js';
 import { STAGES } from '../config.js';
 import { textStyle, playSfx } from '../ui/theme.js';
 import { playerTextures } from '../skins.js';
+import { KEYS } from '../enums/keys.js';
+import { getPhrase } from '../services/translations.js';
 
 /** Victoria: trofeo, festejo y marcador final. */
 export class VictoryScene extends Phaser.Scene {
@@ -18,7 +20,7 @@ export class VictoryScene extends Phaser.Scene {
       this,
       data,
       0.45,
-      champion ? { label: 'JUGAR DE NUEVO', stage: 0 } : { label: 'SIGUIENTE FASE', stage: stage + 1 }
+      champion ? { label: KEYS.JUGAR_DE_NUEVO, stage: 0 } : { label: KEYS.SIGUIENTE_FASE, stage: stage + 1 }
     );
     drawBracket(this, 112, champion ? stage : stage + 1, champion ? 'won' : 'next');
 
@@ -36,7 +38,7 @@ export class VictoryScene extends Phaser.Scene {
       .setDepth(5);
 
     const title = this.add
-      .text(480, 52, champion ? '¡CAMPEÓN!' : '¡GANASTE!', textStyle(64, '#ffd23f', { stroke: '#0b1220', strokeThickness: 12 }))
+      .text(480, 52, getPhrase(champion ? KEYS.CAMPEON : KEYS.GANASTE), textStyle(64, '#ffd23f', { stroke: '#0b1220', strokeThickness: 12 }))
       .setOrigin(0.5)
       .setDepth(10);
     this.tweens.add({ targets: title, scale: 1.08, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });

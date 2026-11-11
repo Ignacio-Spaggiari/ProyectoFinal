@@ -1,4 +1,6 @@
 // Constantes globales del juego (valores tomados del GDD de Penalty Lock)
+// Los textos visibles (label, name, short) son keys de Traducila: se muestran con getPhrase(...).
+import { KEYS } from './enums/keys.js';
 
 export const WIDTH = 960;
 export const HEIGHT = 540;
@@ -26,9 +28,9 @@ export const KICKER_SCALE = 1.4;
 export const AIM = { minX: 170, maxX: 790, minY: 92, maxY: 296, midY: 215 };
 
 export const DIFFICULTIES = {
-  facil: { key: 'facil', label: 'Fácil', guess: 0.15, aimSpeed: 300, reactionMs: 1000 },
-  normal: { key: 'normal', label: 'Normal', guess: 0.25, aimSpeed: 440, reactionMs: 800 },
-  dificil: { key: 'dificil', label: 'Difícil', guess: 0.35, aimSpeed: 620, reactionMs: 650 },
+  facil: { key: 'facil', label: KEYS.FACIL, guess: 0.15, aimSpeed: 300, reactionMs: 1000 },
+  normal: { key: 'normal', label: KEYS.NORMAL, guess: 0.25, aimSpeed: 440, reactionMs: 800 },
+  dificil: { key: 'dificil', label: KEYS.DIFICIL, guess: 0.35, aimSpeed: 620, reactionMs: 650 },
 };
 export const DIFFICULTY_ORDER = ['facil', 'normal', 'dificil'];
 
@@ -61,11 +63,11 @@ export const BARRIER = {
 
 // Torneo: cuartos -> semifinal -> final. barriers() devuelve la X de cada hombre barrera.
 export const STAGES = [
-  { key: 'cuartos', name: 'Cuartos de final', short: 'CUARTOS', barriers: () => [] },
+  { key: 'cuartos', name: KEYS.CUARTOS_DE_FINAL, short: KEYS.CUARTOS, barriers: () => [] },
   // Uno pegado a un palo (al azar), dejando libre el tiro bien ajustado al poste
-  { key: 'semi', name: 'Semifinal', short: 'SEMIFINAL', barriers: () => [Math.random() < 0.5 ? 312 : 648] },
+  { key: 'semi', name: KEYS.SEMIFINAL, short: KEYS.SEMIFINAL_2, barriers: () => [Math.random() < 0.5 ? 312 : 648] },
   // Uno a cada lado del arquero, sin tapar los tiros ajustados a los palos
-  { key: 'final', name: 'Final', short: 'FINAL', barriers: () => [392, 568] },
+  { key: 'final', name: KEYS.FINAL, short: KEYS.FINAL_2, barriers: () => [392, 568] },
 ];
 
 // Teclas para atajar: Q W E (arriba) / A S D (abajo)

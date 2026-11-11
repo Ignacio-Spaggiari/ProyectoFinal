@@ -4,6 +4,8 @@ import { generateSounds } from '../audio/synth.js';
 import { textStyle } from '../ui/theme.js';
 import musicUrl from '../audio/cancionprincipal.mp3';
 import { loadKitId } from '../skins.js';
+import { getTranslations } from '../services/translations.js';
+import { getInitialLanguage } from '../language.js';
 
 /** Escena de Carga: carga la canción, genera imágenes y sonidos y pasa al menú. */
 export class BootScene extends Phaser.Scene {
@@ -30,9 +32,19 @@ export class BootScene extends Phaser.Scene {
     this.load.audio('music', musicUrl);
   }
 
-  create() {
+  async create() {
     generateTextures(this);
     generateSounds(this);
+
+    // Las traducciones se cargan antes de mostrar cualquier texto traducible.
+    // Si Traducila no responde, el juego sigue en español (las keys son el texto base).
+    const lang = this.registry.get('lang') || getInitialLanguage();
+    this.registry.set('lang', lang);
+    try {
+      await getTranslations(lang);
+    } catch (error) {
+      console.warn('No se pudieron cargar las traducciones de Traducila:', error);
+    }
     this.time.delayedCall(200, () => this.scene.start('Menu'));
   }
 }

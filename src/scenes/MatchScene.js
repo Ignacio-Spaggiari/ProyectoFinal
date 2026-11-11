@@ -30,6 +30,9 @@ import {
 } from '../logic/penalty.js';
 import { addMuteButton } from '../ui/MuteButton.js';
 import { playCelebration } from './celebration.js';
+import { KEYS } from '../enums/keys.js';
+import { getPhrase } from '../services/translations.js';
+import { formatScore } from '../language.js';
 import { playerTextures } from '../skins.js';
 import { textStyle, playSfx, goTo } from '../ui/theme.js';
 
@@ -49,7 +52,7 @@ const sweep = (elapsedMs, speed, min, max) => {
 };
 
 // Cartel único para cualquier penal que no termina en gol (atajado, barrera, palo o afuera)
-const MISS_TEXT = '¡NO ENTRÓ!';
+const MISS_TEXT = KEYS.NO_ENTRO;
 
 /** Escena del partido: tanda de penales y muerte súbita. */
 
@@ -79,7 +82,7 @@ export class MatchScene extends Phaser.Scene {
     this.resetActors('player');
     this.time.delayedCall(350, () => {
       playSfx(this, 'whistle', { volume: 0.6 });
-      this.showBanner(this.stage.name.toUpperCase(), '#ffd23f', 900, 60);
+      this.showBanner(getPhrase(this.stage.name).toUpperCase(), '#ffd23f', 900, 60);
     });
     this.time.delayedCall(1500, () => this.nextTurn());
   }
@@ -126,7 +129,7 @@ export class MatchScene extends Phaser.Scene {
     panel.lineStyle(2, 0xffffff, 0.25);
     panel.strokeRoundedRect(300, 6, 360, 74, 12);
 
-    this.add.text(385, 26, 'JUGADOR', textStyle(17, '#93c5fd')).setOrigin(0.5).setDepth(11);
+    this.add.text(385, 26, getPhrase(KEYS.JUGADOR), textStyle(17, '#93c5fd')).setOrigin(0.5).setDepth(11);
     this.add.text(575, 26, 'CPU', textStyle(17, '#fca5a5')).setOrigin(0.5).setDepth(11);
     this.scoreText = this.add.text(480, 27, '0 – 0', textStyle(28, '#ffd23f')).setOrigin(0.5).setDepth(11);
 
@@ -136,7 +139,7 @@ export class MatchScene extends Phaser.Scene {
       this.indicators.cpu.push(this.add.image(531 + i * 22, 58, 'ind_pending').setDepth(11));
     }
     this.suddenDeathText = this.add
-      .text(480, 92, 'MUERTE SÚBITA', textStyle(14, '#f87171', { stroke: '#000', strokeThickness: 4 }))
+      .text(480, 92, getPhrase(KEYS.MUERTE_SUBITA), textStyle(14, '#f87171', { stroke: '#000', strokeThickness: 4 }))
       .setOrigin(0.5)
       .setDepth(11)
       .setVisible(false);
@@ -146,7 +149,7 @@ export class MatchScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setDepth(11);
     this.add
-      .text(944, 46, `${this.stage.name} · ${this.diff.label}`, textStyle(13, '#ffd23f', { stroke: '#000', strokeThickness: 4 }))
+      .text(944, 46, `${getPhrase(this.stage.name)} · ${getPhrase(this.diff.label)}`, textStyle(13, '#ffd23f', { stroke: '#000', strokeThickness: 4 }))
       .setOrigin(1, 0)
       .setDepth(11);
 
@@ -162,7 +165,7 @@ export class MatchScene extends Phaser.Scene {
       .setVisible(false);
 
     // Barra de potencia (abajo)
-    this.powerLabel = this.add.text(40, 470, 'POTENCIA', textStyle(14, '#ffffff')).setDepth(11).setVisible(false);
+    this.powerLabel = this.add.text(40, 470, getPhrase(KEYS.POTENCIA), textStyle(14, '#ffffff')).setDepth(11).setVisible(false);
     this.powerBar = this.add.graphics().setDepth(11);
 
     // Tiempo de reacción al atajar
@@ -257,7 +260,7 @@ export class MatchScene extends Phaser.Scene {
         this.suddenDeathAnnounced = true;
         this.updateHud();
         playSfx(this, 'whistle', { volume: 0.6 });
-        this.showBanner('MUERTE SÚBITA', '#f87171', 1100);
+        this.showBanner(getPhrase(KEYS.MUERTE_SUBITA), '#f87171', 1100);
         this.time.delayedCall(1700, () => this.startTurn());
         return;
       }
@@ -275,7 +278,7 @@ export class MatchScene extends Phaser.Scene {
     this.phase = 'over';
     this.setInfo('');
     playSfx(this, 'whistle', { volume: 0.6 });
-    this.showBanner(winner === 'player' ? '¡GANASTE!' : 'FIN DE LA TANDA', winner === 'player' ? '#ffd23f' : '#f87171', 1200);
+    this.showBanner(getPhrase(winner === 'player' ? KEYS.GANASTE : KEYS.FIN_DE_LA_TANDA), winner === 'player' ? '#ffd23f' : '#f87171', 1200);
     const data = {
       player: this.shootout.playerGoals,
       cpu: this.shootout.cpuGoals,
@@ -309,14 +312,14 @@ export class MatchScene extends Phaser.Scene {
 
   startPlayerKick() {
     this.resetActors('player');
-    this.turnText.setText('¡Pateás vos!').setColor('#93c5fd');
+    this.turnText.setText(getPhrase(KEYS.PATEAS_VOS)).setColor('#93c5fd');
     this.aimElapsed = 0;
     this.aimX = (AIM.minX + AIM.maxX) / 2;
     this.aimY = AIM.midY;
     this.power = 0;
     this.crosshair.setVisible(true).setPosition(this.aimX, this.aimY);
     this.phase = 'aimX';
-    this.setInfo('Clic o ESPACIO para fijar la DIRECCIÓN');
+    this.setInfo(getPhrase(KEYS.CLIC_O_ESPACIO_PARA_FIJAR_LA_DIRECCION));
   }
 
   onAction() {
@@ -325,12 +328,12 @@ export class MatchScene extends Phaser.Scene {
     } else if (this.phase === 'aimX') {
       this.phase = 'aimY';
       this.aimElapsed = 0;
-      this.setInfo('Clic o ESPACIO para fijar la ALTURA');
+      this.setInfo(getPhrase(KEYS.CLIC_O_ESPACIO_PARA_FIJAR_LA_ALTURA));
     } else if (this.phase === 'aimY') {
       this.phase = 'power';
       this.powerElapsed = 0;
       this.powerLabel.setVisible(true);
-      this.setInfo('Clic o ESPACIO para fijar la POTENCIA');
+      this.setInfo(getPhrase(KEYS.CLIC_O_ESPACIO_PARA_FIJAR_LA_POTENCIA));
     } else if (this.phase === 'power') {
       this.playerShoot();
     }
@@ -372,12 +375,12 @@ export class MatchScene extends Phaser.Scene {
 
   startCpuKick() {
     this.resetActors('cpu');
-    this.turnText.setText('¡Atajala!').setColor('#fca5a5');
+    this.turnText.setText(getPhrase(KEYS.ATAJALA)).setColor('#fca5a5');
     this.phase = 'runup';
     this.pickedZone = null;
     this.cpuShot = pickCpuShot();
     this.showZones(true, 0.5);
-    this.setInfo('Mirá al pateador... ¡preparate!');
+    this.setInfo(getPhrase(KEYS.MIRA_AL_PATEADOR_PREPARATE));
 
     // Pista: inclinación del cuerpo durante la carrera (acierta el 60 %)
     const hint = pickHintSide(this.cpuShot.side);
@@ -392,7 +395,7 @@ export class MatchScene extends Phaser.Scene {
     this.phase = 'react';
     this.reactElapsed = 0;
     this.showZones(true, 1);
-    this.setInfo('¡ELEGÍ ZONA!  Q W E / A S D  o clic');
+    this.setInfo(getPhrase(KEYS.ELEGI_ZONA_Q_W_E_A_S_D_O_CLIC));
     this.flyBall(this.cpuShot.tx, this.cpuShot.ty, this.diff.reactionMs);
     this.time.delayedCall(this.diff.reactionMs, () => this.resolveCpuKick());
   }
@@ -501,7 +504,7 @@ export class MatchScene extends Phaser.Scene {
       this.tweens.add({ targets: ball, y: ty + 10, duration: 250, ease: 'Bounce.easeOut' });
       this.tweens.add({ targets: this.goal, y: GOAL.y + 3, duration: 60, yoyo: true, repeat: 3 });
       this.kicker.setFrame('celebrate');
-      this.showBanner('¡GOL!', mine ? '#4ade80' : '#f87171');
+      this.showBanner(getPhrase(KEYS.GOL), mine ? '#4ade80' : '#f87171');
       if (mine) this.confetti.explode(60, 480, 230);
     } else if (result === 'atajado') {
       playSfx(this, 'save', { volume: 0.8 });
@@ -515,7 +518,7 @@ export class MatchScene extends Phaser.Scene {
       });
       this.kicker.setFrame('lament');
       this.keeper.setFrame('celebrate');
-      this.showBanner(MISS_TEXT, mine ? '#f87171' : '#4ade80');
+      this.showBanner(getPhrase(MISS_TEXT), mine ? '#f87171' : '#4ade80');
       if (!mine) this.confetti.explode(40, 480, 230);
     } else if (result === 'barrera') {
       // Rebota en el hombre barrera (que no se mueve)
@@ -529,7 +532,7 @@ export class MatchScene extends Phaser.Scene {
         ease: 'Quad.easeOut',
       });
       this.kicker.setFrame('lament');
-      this.showBanner(MISS_TEXT, '#f87171');
+      this.showBanner(getPhrase(MISS_TEXT), '#f87171');
     } else if (result === 'palo') {
       playSfx(this, 'post', { volume: 0.8 });
       this.tweens.add({
@@ -541,7 +544,7 @@ export class MatchScene extends Phaser.Scene {
         ease: 'Quad.easeOut',
       });
       this.kicker.setFrame('lament');
-      this.showBanner(MISS_TEXT, '#e5e7eb');
+      this.showBanner(getPhrase(MISS_TEXT), '#e5e7eb');
     } else {
       playSfx(this, 'miss', { volume: 0.7 });
       this.tweens.add({
@@ -553,7 +556,7 @@ export class MatchScene extends Phaser.Scene {
         duration: 350,
       });
       this.kicker.setFrame('lament');
-      this.showBanner(MISS_TEXT, '#e5e7eb');
+      this.showBanner(getPhrase(MISS_TEXT), '#e5e7eb');
     }
 
     if (result === 'gol') {
@@ -572,10 +575,10 @@ export class MatchScene extends Phaser.Scene {
       {
         kicker: mine ? this.kit.kicker : 'kicker_cpu',
         fans: mine ? this.kit.fans : 'fan_cpu',
-        title: mine ? '¡GOOOL!' : '¡GOL DE LA CPU!',
+        title: getPhrase(mine ? KEYS.GOOOL : KEYS.GOL_DE_LA_CPU),
         color: mine ? '#4ade80' : '#f87171',
         colorHex: mine ? 0x4ade80 : 0xf87171,
-        score: `JUGADOR  ${this.shootout.playerGoals} – ${this.shootout.cpuGoals}  CPU`,
+        score: formatScore(this.shootout.playerGoals, this.shootout.cpuGoals),
       },
       () => {
         this.celebration = null;

@@ -2,10 +2,13 @@ import { STAGES } from '../config.js';
 import { createButton, MenuNav } from '../ui/Button.js';
 import { addMuteButton } from '../ui/MuteButton.js';
 import { textStyle, goTo } from '../ui/theme.js';
+import { KEYS } from '../enums/keys.js';
+import { getPhrase } from '../services/translations.js';
+import { formatScore } from '../language.js';
 
 /**
  * Partes comunes de las pantallas de Victoria y Derrota: marcador final y botones.
- * playAgain: { label, stage } -> botón principal que juega esa fase del torneo.
+ * playAgain: { label, stage } -> botón principal que juega esa fase del torneo (label es una key).
  */
 export function buildResultScreen(scene, data, overlayAlpha, playAgain) {
   scene.add.image(0, 0, 'stadium').setOrigin(0);
@@ -14,15 +17,15 @@ export function buildResultScreen(scene, data, overlayAlpha, playAgain) {
   const { player = 0, cpu = 0 } = data || {};
 
   scene.add
-    .text(480, 372, `JUGADOR  ${player} – ${cpu}  CPU`, textStyle(30, '#ffffff', { stroke: '#000', strokeThickness: 6 }))
+    .text(480, 372, formatScore(player, cpu), textStyle(30, '#ffffff', { stroke: '#000', strokeThickness: 6 }))
     .setOrigin(0.5);
 
   const play = () => {
     scene.registry.set('stage', playAgain.stage);
     goTo(scene, 'Match');
   };
-  const again = createButton(scene, 340, 470, playAgain.label, play, { width: 260, size: 20 });
-  const menu = createButton(scene, 620, 470, 'MENÚ', () => goTo(scene, 'Menu'), { width: 260, size: 20 });
+  const again = createButton(scene, 340, 470, getPhrase(playAgain.label), play, { width: 260, size: 20 });
+  const menu = createButton(scene, 620, 470, getPhrase(KEYS.MENU), () => goTo(scene, 'Menu'), { width: 260, size: 20 });
   new MenuNav(scene, [again, menu]);
 
   addMuteButton(scene, 930, 30);
@@ -44,18 +47,18 @@ export function drawBracket(scene, y, current, status) {
   STAGES.forEach((stage, i) => {
     const x = x0 + i * gap;
     let fill = 0x374151;
-    let label = stage.short;
+    let label = getPhrase(stage.short);
     let color = '#9ca3af';
     if (i < current || (i === current && status === 'won')) {
       fill = 0x16a34a;
-      label = `✔ ${stage.short}`;
+      label = `✔ ${getPhrase(stage.short)}`;
       color = '#ffffff';
     } else if (i === current && status === 'next') {
       fill = 0xffd23f;
       color = '#1a1a1a';
     } else if (i === current && status === 'lost') {
       fill = 0xdc2626;
-      label = `✖ ${stage.short}`;
+      label = `✖ ${getPhrase(stage.short)}`;
       color = '#ffffff';
     }
     g.fillStyle(fill, 1);

@@ -3,6 +3,8 @@ import { KITS, getKit, kitTexture, saveKitId } from '../skins.js';
 import { createButton, MenuNav } from '../ui/Button.js';
 import { addMuteButton } from '../ui/MuteButton.js';
 import { textStyle, goTo, playSfx } from '../ui/theme.js';
+import { KEYS } from '../enums/keys.js';
+import { getPhrase } from '../services/translations.js';
 
 const THUMB_Y = 448;
 const THUMB_GAP = 74;
@@ -19,7 +21,7 @@ export class SkinsScene extends Phaser.Scene {
 
     this.add.image(0, 0, 'stadium').setOrigin(0);
     this.add.rectangle(0, 0, 960, 540, 0x050b1f, 0.72).setOrigin(0);
-    this.add.text(480, 40, 'EQUIPACIÓN', textStyle(38, '#ffd23f', { stroke: '#000', strokeThickness: 6 })).setOrigin(0.5);
+    this.add.text(480, 40, getPhrase(KEYS.EQUIPACION), textStyle(38, '#ffd23f', { stroke: '#000', strokeThickness: 6 })).setOrigin(0.5);
 
     // Vista previa grande
     const floor = this.add.graphics();
@@ -29,8 +31,8 @@ export class SkinsScene extends Phaser.Scene {
     this.kicker = this.add.sprite(380, 332, 'kicker_cpu', 'idle').setOrigin(0.5, 1).setScale(2.4);
     this.keeper = this.add.sprite(580, 332, 'keeper_cpu', 'idle').setOrigin(0.5, 1).setScale(2.4);
     this.tweens.add({ targets: [this.kicker, this.keeper], y: 324, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-    this.add.text(380, 345, 'PATEADOR', textStyle(13, '#cbd5e1')).setOrigin(0.5);
-    this.add.text(580, 345, 'ARQUERO', textStyle(13, '#cbd5e1')).setOrigin(0.5);
+    this.add.text(380, 345, getPhrase(KEYS.PATEADOR), textStyle(13, '#cbd5e1')).setOrigin(0.5);
+    this.add.text(580, 345, getPhrase(KEYS.ARQUERO), textStyle(13, '#cbd5e1')).setOrigin(0.5);
 
     // Nombre con flechas
     this.nameText = this.add.text(480, 385, '', textStyle(28, '#ffffff', { stroke: '#000', strokeThickness: 5 })).setOrigin(0.5);
@@ -63,8 +65,8 @@ export class SkinsScene extends Phaser.Scene {
     };
     const back = () => goTo(this, 'Menu');
     const buttons = [
-      createButton(this, 370, 506, 'ELEGIR', confirm, { width: 200, height: 46, size: 20 }),
-      createButton(this, 590, 506, 'VOLVER', back, { width: 200, height: 46, size: 20 }),
+      createButton(this, 370, 506, getPhrase(KEYS.ELEGIR), confirm, { width: 200, height: 46, size: 20 }),
+      createButton(this, 590, 506, getPhrase(KEYS.VOLVER), back, { width: 200, height: 46, size: 20 }),
     ];
     // Las flechas laterales cambian la equipación; arriba/abajo se mueve entre botones
     buttons.forEach((b) => {
@@ -93,7 +95,7 @@ export class SkinsScene extends Phaser.Scene {
     const kit = KITS[this.index];
     this.kicker.setTexture(kitTexture('kicker', kit.id), 'idle');
     this.keeper.setTexture(kitTexture('keeper', kit.id), 'idle');
-    this.nameText.setText(kit.name.toUpperCase());
+    this.nameText.setText(getPhrase(kit.name).toUpperCase());
 
     if (animate) {
       this.kicker.setScale(2.1);

@@ -1,43 +1,46 @@
 // Equipaciones (skins) que puede elegir el jugador. Cada una tiene la ropa del
 // pateador y la del arquero. Ninguna es roja/naranja para no confundirse con la CPU.
 
+// El name de cada equipación es una key de Traducila: se muestra con getPhrase(...).
+import { KEYS } from './enums/keys.js';
+
 const SKIN = 0xe0ac69;
 const HAIR = 0x3b2314;
 
 export const KITS = [
   {
     id: 'clasica',
-    name: 'Clásica',
+    name: KEYS.CLASICA,
     kicker: { shirt: 0x2563eb, shorts: 0xffffff, socks: 0x2563eb, number: 0xffffff },
     keeper: { shirt: 0xfacc15, shorts: 0x1f2937, socks: 0xfacc15, gloves: 0x22c55e },
   },
   {
     id: 'celeste',
-    name: 'Celeste y Blanca',
+    name: KEYS.CELESTE_Y_BLANCA,
     kicker: { shirt: 0x7dd3fc, stripes: 0xffffff, shorts: 0x111827, socks: 0xffffff, number: 0x111827 },
     keeper: { shirt: 0x16a34a, shorts: 0x111827, socks: 0x16a34a, gloves: 0xffffff },
   },
   {
     id: 'selva',
-    name: 'Selva',
+    name: KEYS.SELVA,
     kicker: { shirt: 0x15803d, shorts: 0xffffff, socks: 0x15803d, number: 0xfacc15, hoops: 0xfacc15 },
     keeper: { shirt: 0xa855f7, shorts: 0x1f2937, socks: 0xa855f7, gloves: 0xfacc15 },
   },
   {
     id: 'oro',
-    name: 'Negro y Oro',
+    name: KEYS.NEGRO_Y_ORO,
     kicker: { shirt: 0x111111, shorts: 0x111111, socks: 0xfacc15, number: 0xfacc15, stripes: 0x2a2a2a },
     keeper: { shirt: 0x06b6d4, shorts: 0x111827, socks: 0x06b6d4, gloves: 0xffffff },
   },
   {
     id: 'fucsia',
-    name: 'Fucsia',
+    name: KEYS.FUCSIA,
     kicker: { shirt: 0xec4899, shorts: 0x111827, socks: 0xec4899, number: 0xffffff },
     keeper: { shirt: 0x84cc16, shorts: 0x111827, socks: 0x84cc16, gloves: 0xec4899 },
   },
   {
     id: 'banda',
-    name: 'Blanca con Banda',
+    name: KEYS.BLANCA_CON_BANDA,
     kicker: { shirt: 0xf8fafc, sash: 0x1e3a8a, shorts: 0x1e3a8a, socks: 0xf8fafc, number: 0x1e3a8a },
     keeper: { shirt: 0x111827, shorts: 0x111827, socks: 0x111827, gloves: 0x38bdf8 },
   },

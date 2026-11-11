@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { buildResultScreen, drawBracket } from './resultScreen.js';
 import { textStyle, playSfx } from '../ui/theme.js';
 import { playerTextures } from '../skins.js';
+import { KEYS } from '../enums/keys.js';
+import { getPhrase } from '../services/translations.js';
 
 /** Derrota: jugador abatido y marcador final. */
 export class DefeatScene extends Phaser.Scene {
@@ -12,11 +14,11 @@ export class DefeatScene extends Phaser.Scene {
   create(data) {
     const stage = (data && data.stage) || 0;
     // Reintentar repite la misma fase del torneo
-    buildResultScreen(this, data, 0.7, { label: 'REINTENTAR', stage });
+    buildResultScreen(this, data, 0.7, { label: KEYS.REINTENTAR, stage });
     drawBracket(this, 112, stage, 'lost');
 
     this.add
-      .text(480, 52, 'PERDISTE', textStyle(64, '#f87171', { stroke: '#0b1220', strokeThickness: 12 }))
+      .text(480, 52, getPhrase(KEYS.PERDISTE), textStyle(64, '#f87171', { stroke: '#0b1220', strokeThickness: 12 }))
       .setOrigin(0.5)
       .setDepth(10);
 

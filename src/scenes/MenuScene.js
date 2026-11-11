@@ -30,7 +30,7 @@ export class MenuScene extends Phaser.Scene {
 
     this.subtitle = this.add.text(480, 160, '', textStyle(18, '#ffffff')).setOrigin(0.5);
 
-    const ball = this.add.image(480, 205, 'ball').setScale(1.3);
+    const ball = this.add.image(480, 206, 'ball').setScale(1.3);
     this.tweens.add({ targets: ball, y: 190, duration: 420, yoyo: true, repeat: -1, ease: 'Quad.easeOut' });
     this.tweens.add({ targets: ball, angle: 360, duration: 2000, repeat: -1 });
 
